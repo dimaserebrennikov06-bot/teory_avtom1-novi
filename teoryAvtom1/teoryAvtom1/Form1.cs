@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -181,6 +181,19 @@ namespace teoryAvtom1
                     boxLabels[i].Text = $"{box.DisplayName}\n{box.CurrentCount}/8";
                     boxLabels[i].ForeColor = box.IsFull ? Color.Green :
                                            !box.IsActive ? Color.Gray : Color.Black;
+                }
+                // ЗАГРУЖАЕМ СПРАЙТ ЯЩИКА как у детали
+                string boxPath = Path.Combine("Sprites",
+                    $"box_{box.TargetType}_{box.TargetColor}.png");
+                if (File.Exists(boxPath))
+                {
+                    // Находим соответствующий PictureBox для ящика
+                    var boxPictureBox = Controls.Find($"pictureBox{i + 1}", true).FirstOrDefault() as PictureBox;
+                    if (boxPictureBox != null)
+                    {
+                        boxPictureBox.Image = Image.FromFile(boxPath);
+                        boxPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                    }
                 }
             }
         }
