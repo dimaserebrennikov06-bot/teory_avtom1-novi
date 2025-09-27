@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,7 +17,8 @@ namespace teoryAvtom1
         private Random random = new Random();
 
         public const int ConveyorLength = 100;
-        public const int DropZonePosition = 80;
+        
+        private readonly int[] boxDropPositions = { 5, 15, 25, 40, 50, 65, 75, 90 };
 
         public GameState()
         {
@@ -88,17 +89,27 @@ namespace teoryAvtom1
         {
             if (CurrentDetail == null)
             {
-                GenerateSingleDetail(); // Новый вызов без параметров
+                GenerateSingleDetail();
                 return;
             }
 
             CurrentDetailPosition += 5;
-
-            if (CurrentDetailPosition >= DropZonePosition)
+            for (int i = 0; i < Boxes.Count; i++)
             {
-                if (ProcessCurrentDetail())
+                if (CurrentDetailPosition >= boxDropPositions[i] &&
+                    CurrentDetailPosition < boxDropPositions[i] + 5)
                 {
-                    GenerateSingleDetail(); // Новый вызов без параметров
+                    var box = Boxes[i];
+                    if (box.TargetType == CurrentDetail.Type &&
+                        box.TargetColor == CurrentDetail.Color &&
+                        !box.IsFull)
+                    {
+                        if (ProcessCurrentDetail())
+                        {
+                            GenerateSingleDetail();
+                        }
+                        return;
+                    }
                 }
             }
         }
